@@ -5,21 +5,18 @@ terraform {
       version = "5.4.0"
     }
   }
-terraform {
+
   backend "azurerm" {
-    resource_group_name  = "tfstate-rg"                 # your RG name
-    storage_account_name = "tfstateaccountmangala01"    # your storage account
-    container_name       = "tfstate"                    # container you created
-    key                  = "preprod.tfstate"            # unique state file name
+    resource_group_name  = "tfstate-rg"
+    storage_account_name = "tfstateaccountmangala01"
+    container_name       = "tfstate"
+    key                  = "preprod.tfstate"
   }
-}
 }
 
 provider "azurerm" {
   features {}
 }
-
-
 
 module "infra_vm" {
   source              = "../../CICD_Modules/infra"
@@ -31,6 +28,3 @@ module "infra_vm" {
   ssh_public_key      = var.ssh_public_key
   subnet_id           = var.subnet_id
 }
-
-
-
