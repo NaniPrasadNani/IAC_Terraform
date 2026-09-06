@@ -1,51 +1,41 @@
-name: Terraform CI/CD
+name: Terraform Infra CI/CD
 
 on:
   workflow_dispatch:
 
 jobs:
-  plan:
+  preprod-plan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform init -backend-config="key=preprod.tfstate"
+      - run: terraform plan -var-file=environments/preprod/terraform.tfvars -out=tfplan-preprod
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Export Azure Credentials
-        run: |
-          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Plan
-        run: terraform plan
-
-  apply:
-    needs: plan
+  preprod-apply:
+    needs: preprod-plan
     runs-on: ubuntu-latest
-    environment: production   # requires approval if you configure reviewers
+    environment: preprod
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform init -backend-config="key=preprod.tfstate"
+      - run: terraform apply -auto-approve tfplan-preprod
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+  prod-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform init -backend-config="key=prod.tfstate"
+      - run: terraform plan -var-file=environments/prod/terraform.tfvars -out=tfplan-prod
 
-      - name: Export Azure Credentials
-        run: |
-          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+  prod-apply:
+    needs: prod-plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform init -backend-config="key=prod.tfstate"
+      - run: terraform apply -auto-approve tfplan-prod
