@@ -12,6 +12,7 @@ provider "azurerm" {
 }
 
 
+
 module "infra_vm" {
   source              = "../../CICD_Modules/infra"
   vm_name             = "preprod-vm1"
