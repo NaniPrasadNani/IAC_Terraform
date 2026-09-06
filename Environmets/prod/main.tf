@@ -8,3 +8,11 @@ module "infra_vm" {
   ssh_public_key      = var.ssh_public_key
   subnet_id           = var.subnet_id
 }
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tfstate-rg"
+    storage_account_name = "tfstateaccountmangala01"
+    container_name       = "tfstate"
+    key                  = "prod.tfstate"
+  }
+}
