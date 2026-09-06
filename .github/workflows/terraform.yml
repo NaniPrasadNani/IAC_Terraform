@@ -9,7 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform init -backend-config="key=preprod.tfstate"
+      # Step 9: Init + Plan for preprod
+      - run: terraform init
       - run: terraform plan -var-file=environments/preprod/terraform.tfvars -out=tfplan-preprod
 
   preprod-apply:
@@ -19,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform init -backend-config="key=preprod.tfstate"
+      # Step 9: Init + Apply for preprod
+      - run: terraform init
       - run: terraform apply -auto-approve tfplan-preprod
 
   prod-plan:
@@ -27,7 +29,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform init -backend-config="key=prod.tfstate"
+      # Step 9: Init + Plan for prod
+      - run: terraform init
       - run: terraform plan -var-file=environments/prod/terraform.tfvars -out=tfplan-prod
 
   prod-apply:
@@ -37,5 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform init -backend-config="key=prod.tfstate"
+      # Step 9: Init + Apply for prod
+      - run: terraform init
       - run: terraform apply -auto-approve tfplan-prod
