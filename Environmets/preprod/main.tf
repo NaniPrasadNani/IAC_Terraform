@@ -1,5 +1,5 @@
 module "infra_vm" {
-  source              = "../../modules/infra-vm"
+  source              = "../../CICD_Modules/infra"
   vm_name             = "preprod-vm1"
   resource_group_name = "rg-preprod-infra"
   location            = var.location
