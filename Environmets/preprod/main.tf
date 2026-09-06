@@ -1,3 +1,17 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "5.4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+
 module "infra_vm" {
   source              = "../../CICD_Modules/infra"
   vm_name             = "preprod-vm1"
