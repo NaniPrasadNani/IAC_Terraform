@@ -17,6 +17,11 @@ terraform {
 provider "azurerm" {
   features {}
 }
+resource "azurerm_resource_group" "preprod_rg" {
+  name     = "rg-preprod-infra"
+  location = var.location
+}
+
 
 module "infra_vm" {
   source              = "../../CICD_Modules/infra"
