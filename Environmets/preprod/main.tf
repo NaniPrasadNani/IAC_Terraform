@@ -25,11 +25,6 @@ variable "vm_size" {
   description = "The size of the VM to deploy"
   type        = string
 }
-variable "location" {
-  description = "Azure region for resources"
-  type        = string
-}
-
 
 module "infra_vm" {
   source              = "../../CICD_Modules/infra"
