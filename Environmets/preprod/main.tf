@@ -21,6 +21,14 @@ resource "azurerm_resource_group" "preprod_rg" {
   name     = "rg-preprod-infra"
   location = var.location
 }
+variable "vm_size" {
+  description = "The size of the VM to deploy"
+  type        = string
+}
+variable "location" {
+  description = "Azure region for resources"
+  type        = string
+}
 
 
 module "infra_vm" {
