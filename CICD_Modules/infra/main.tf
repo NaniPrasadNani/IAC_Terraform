@@ -11,6 +11,11 @@ provider "azurerm" {
   features {}
 }
 
+resource "azurerm_resource_group" "preprod_rg" {
+  name     = "rg-preprod-infra"
+  location = var.location
+}
+
 
 resource "azurerm_network_interface" "nic" {
   name                = "${var.vm_name}-nic"
